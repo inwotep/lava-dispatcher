@@ -58,10 +58,17 @@ class cmd_boot_linaro_android_image(BaseAction):
     parameters_schema['properties']['test_image_prompt'] = {
         'type': 'string', 'optional': True
     }
+    parameters_schema['properties']['boot_uiautomator_jar'] = {
+        'type': 'string', 'optional': True
+    }
+    parameters_schema['properties']['boot_uiautomator_commands'] = {
+        'type': 'array', 'items': {'type': 'string'}, 'optional': True
+    }
 
     def run(self, options=[], boot_cmds=None, adb_check=False,
             wait_for_home_screen=True, wait_for_home_screen_activity=None,
-            test_image_prompt=None):
+            test_image_prompt=None, boot_uiautomator_jar=None,
+            boot_uiautomator_commands=None):
         client = self.client
         if boot_cmds is not None:
             client.config.boot_cmds = boot_cmds
@@ -72,6 +79,10 @@ class cmd_boot_linaro_android_image(BaseAction):
             client.config.test_image_prompts.append(test_image_prompt)
         client.target_device.boot_options = options
         client.config.android_wait_for_home_screen = wait_for_home_screen
+        client.config.android_boot_uiautomator_jar = \
+            boot_uiautomator_jar
+        client.config.android_boot_uiautomator_commands = \
+            boot_uiautomator_commands
         try:
             client.boot_linaro_android_image(
                 adb_check=adb_check)
